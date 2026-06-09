@@ -1,11 +1,21 @@
+import { useEffect } from "react";
+
 import MatchCard from "../features/match/components/MatchCard";
+
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+
 import { addMatch, removeMatch } from "../features/match/MatchSlice";
+
+import { fetchMatches } from "../features/match/matchThunks";
 
 function MatchesPage() {
   const dispatch = useAppDispatch();
 
-  const matches = useAppSelector((state) => state.match.matches);
+  const { matches, loading, error } = useAppSelector((state) => state.match);
+
+  useEffect(() => {
+    dispatch(fetchMatches());
+  }, [dispatch]);
 
   const handleAddMatch = () => {
     dispatch(
@@ -16,6 +26,14 @@ function MatchesPage() {
       }),
     );
   };
+
+  if (loading) {
+    return <h2 className="text-xl">Loading Matches...</h2>;
+  }
+
+  if (error) {
+    return <h2 className="text-xl text-red-500">{error}</h2>;
+  }
 
   return (
     <div>
