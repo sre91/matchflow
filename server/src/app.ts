@@ -2,6 +2,7 @@ import Express from "express";
 import matchRoutes from "./routes/matchRoutes";
 import { loggerMiddleware } from "./middleware/loggerMiddleware";
 import { errorMiddleware } from "./middleware/errorMiddleware";
+import authRoutes from "./routes/authRoutes";
 
 const app = Express();
 
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/matches", matchRoutes);
 app.use(errorMiddleware);
 

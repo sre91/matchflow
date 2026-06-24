@@ -19,7 +19,15 @@ export const createMatch = async (req: Request, res: Response) => {
 
 export const getMatches = async (req: Request, res: Response) => {
   try {
-    const matches = await Match.find();
+    const { status } = req.query;
+
+    const filter: any = {};
+
+    if (status) {
+      filter.status = status;
+    }
+
+    const matches = await Match.find(filter);
 
     res.status(200).json(matches);
   } catch (error) {
