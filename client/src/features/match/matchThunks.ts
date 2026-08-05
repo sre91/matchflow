@@ -1,20 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import type { Match } from "./MatchSlice";
+import api from "../../api/axios";
 
-export const fetchMatches = createAsyncThunk(
+export const fetchMatches = createAsyncThunk<Match[]>(
   "match/fetchMatches",
 
   async () => {
-    return [
-      {
-        id: 1,
-        teamA: "CSK",
-        teamB: "MI",
-      },
-      {
-        id: 2,
-        teamA: "RCB",
-        teamB: "KKR",
-      },
-    ];
+    const response = await api.get("/matches");
+
+    return response.data;
   },
 );

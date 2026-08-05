@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Match from "../models/match";
+import { getIO } from "../socket/socket";
 
 // Post or create Matches
 
@@ -70,6 +71,11 @@ export const updateMatch = async (req: Request, res: Response) => {
         message: "Match not found",
       });
     }
+
+    // Notify everyone watching this match
+    const io = getIO();
+
+    io.to(match._id.toString()).emit("scoreUpdated", match);
 
     res.status(200).json(match);
   } catch (error) {

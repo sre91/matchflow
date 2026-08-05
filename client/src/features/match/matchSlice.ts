@@ -4,9 +4,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { fetchMatches } from "./matchThunks";
 
 export type Match = {
-  id: number;
+  _id: string;
   teamA: string;
   teamB: string;
+  status: "upcoming" | "live" | "completed";
+  runs: number;
+  wickets: number;
+  overs: number;
 };
 
 type MatchState = {
@@ -18,14 +22,22 @@ type MatchState = {
 const initialState: MatchState = {
   matches: [
     {
-      id: 1,
+      _id: "1",
       teamA: "CSK",
       teamB: "MI",
+      status: "live",
+      runs: 120,
+      wickets: 2,
+      overs: 15,
     },
     {
-      id: 2,
+      _id: "2",
       teamA: "RCB",
       teamB: "KKR",
+      status: "upcoming",
+      runs: 0,
+      wickets: 0,
+      overs: 0,
     },
   ],
 
@@ -44,9 +56,19 @@ const matchSlice = createSlice({
       state.matches.push(action.payload);
     },
 
-    removeMatch: (state, action: PayloadAction<number>) => {
+    updateMatch: (state, action: PayloadAction<Match>) => {
+      const index = state.matches.findIndex(
+        (match) => match._id === action.payload._id,
+      );
+
+      if (index !== -1) {
+        state.matches[index] = action.payload;
+      }
+    },
+
+    removeMatch: (state, action: PayloadAction<string>) => {
       state.matches = state.matches.filter(
-        (match) => match.id !== action.payload,
+        (match) => match._id !== action.payload,
       );
     },
 
@@ -79,7 +101,7 @@ const matchSlice = createSlice({
   },
 });
 
-export const { addMatch, removeMatch, setLoading, setError } =
+export const { addMatch, updateMatch, removeMatch, setLoading, setError } =
   matchSlice.actions;
 
 export default matchSlice.reducer;
